@@ -58,17 +58,23 @@ import { validUsername } from '@/utils/validate'
 export default {
   name: 'Login',
   data() {
+    //用户名验证
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+        //传入错误信息,不放行
+        callback(new Error('请输入正确的用户名'))
       } else {
+        //放行
         callback()
       }
     }
+    //密码验证
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        //传入错误信息,不放行
+        callback(new Error('密码的长度至少要为6位!'))
       } else {
+        //放行
         callback()
       }
     }
@@ -95,6 +101,7 @@ export default {
     }
   },
   methods: {
+    //显示密码
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -105,10 +112,12 @@ export default {
         this.$refs.password.focus()
       })
     },
+    //登录逻辑
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
+          //使用了命名空间
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
@@ -141,6 +150,7 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
+  //添加背景图
   background-image: url(../../assets/bg.jpg);
   background-size: cover;
   .el-input {
