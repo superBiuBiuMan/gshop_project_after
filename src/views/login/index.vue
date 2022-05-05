@@ -152,6 +152,7 @@ $cursor: #fff;
 .login-container {
   //添加背景图
   background-image: url(../../assets/bg.jpg);
+  // background-image: url('@/assets/bg.jpg');
   background-size: cover;
   .el-input {
     display: inline-block;

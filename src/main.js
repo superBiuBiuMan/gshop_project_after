@@ -15,6 +15,9 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import * as $API from "@/api/index.js";// API接口文档
+
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -35,6 +38,7 @@ Vue.use(ElementUI, { locale })
 
 Vue.config.productionTip = false
 
+Vue.prototype.$API = $API;
 new Vue({
   el: '#app',
   router,

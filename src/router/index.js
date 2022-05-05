@@ -11,6 +11,7 @@ import Layout from '@/layout'
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
  *
  * hidden: true                   if set true, item will not show in the sidebar(default is false)
+ * hidden: true                   如果设置为true,项目栏将不会显示在侧边栏(默认为false)
  * alwaysShow: true               if set true, will always show the root menu
  *                                if not set alwaysShow, when item has more than one children route,
  *                                it will becomes nested mode, otherwise not show the root menu
@@ -51,11 +52,56 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
+      //侧边栏显示的文字和图标及面包屑当中显示
       meta: { title: '首页', icon: 'dashboard' }
     }]
   },
 
-  // 404 page must be placed at the end !!!
+  {
+    path:"/product",
+    name:"Product",
+    //首先得显示一级路由组件
+    component:Layout,
+    meta:{title:"商品管理",icon:'el-icon-s-shop'},
+    //默认的二级路由
+    redirect:"/product/trademark/list",
+    children:[
+      //重定向等同于
+      // {
+      //   path:"",
+      //   redirect:"/product/trademark/list"
+      // },
+      {
+        path:'trademark/list',
+        name:"Trademark",
+        component: () => import("@/views/product/trademark/List.vue"),
+        //用于在侧边栏和面包屑当中显示
+        meta:{title:"品牌管理"}
+      },
+      {
+        path:'attr/list',
+        name:"Attr",
+        component: () => import("@/views/product/attr/List.vue"),
+        //用于在侧边栏和面包屑当中显示
+        meta:{title:"属性管理"}
+      },
+      {
+        path:"sku/list",
+        name:"Sku",
+        component: () => import("@/views/product/sku/List.vue"),
+        meta:{title:"sku管理"}
+      },
+      {
+        path:"spu/list",
+        name:"Spu",
+        component: () => import("@/views/product/spu/List.vue"),
+        meta:{title:"spu管理"}
+      }
+    ]
+  },
+
+
+  // 404 page must be placed at the end !!!(404页面必须被放置在末尾)
   { path: '*', redirect: '/404', hidden: true }
 ]
 
