@@ -13,7 +13,7 @@ export default {
 
   // 删除
   removeBaseTradeMark(id) {
-    return request.get("/admin/product/baseTrademark/remove/" + id);
+    return request.delete("/admin/product/baseTrademark/remove/" + id);
   },
 
   // 分页列表
