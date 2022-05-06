@@ -83,7 +83,7 @@ export const constantRoutes = [
         name:"Attr",
         component: () => import("@/views/product/attr/List.vue"),
         //用于在侧边栏和面包屑当中显示
-        meta:{title:"属性管理"}
+        meta:{title:"平台属性管理"}
       },
       {
         path:"sku/list",
