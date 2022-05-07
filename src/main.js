@@ -17,11 +17,14 @@ import '@/permission' // permission control
 
 import * as $API from "@/api/index.js";// API接口文档
 
+//三级分类
 import CategorySelector from "@/components/CategorySelector"
+//自定义提示按钮
+import MyButton from "@/components/MyButton"
 
 //注册全局组件
 Vue.component(CategorySelector.name,CategorySelector);
-
+Vue.component(MyButton.name,MyButton);
 
 /**
  * If you don't want to use mock-server

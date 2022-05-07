@@ -19,6 +19,10 @@ export default {
   },
   /* 添加或者修改属性 */
   addOrUpdate(attr) {
-    return request.post("/admin/product/saveAttrInfo",attr);
+    return request.post("/admin/product/saveAttrInfo", attr);
+  },
+  /* 根据id删除某个平台属性 */
+  delete(attrId) {
+    return request.delete("/admin/product/deleteAttr/" + attrId);
   }
 }
