@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card>
-      <CategorySelector @changeCategory="changeCategory"></CategorySelector>
+      <CategorySelector @changeCategory="changeCategory" :forbidden="isAddOrEditProperty"></CategorySelector>
     </el-card>
     <el-card style="margin-top: 20px">
       <div v-show="!isAddOrEditProperty">
@@ -39,7 +39,9 @@
             width="150">
             <template slot-scope="{row}">
                 <MyButton type="warning" icon="el-icon-edit" size="mini" title="修改属性" @click="editProperty(row)"></MyButton>
-                <MyButton type="danger" icon="el-icon-delete" size="mini" title="删除属性"></MyButton>
+                <el-popconfirm :title="`确定删除${row.attrName}吗?`" @onConfirm="confirmDelete(row)">
+                  <MyButton type="danger" icon="el-icon-delete" size="mini" title="删除属性" slot="reference"></MyButton>
+                </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
@@ -98,7 +100,7 @@
           label="操作"
           width="width">
           <template slot-scope="{row,$index}">
-            <el-popconfirm :title="`确定删除${row.valueName}吗?`" @onConfirm="confirmDelete">
+            <el-popconfirm :title="`确定删除${row.valueName}吗?`" @onConfirm="attrForm.attrValueList.splice($index,1)">
             <!-- <el-popconfirm :title="`确定删除${row.valueName}吗?`" @confirm="confirmDelete"> -->
               <MyButton type="danger" icon="el-icon-delete" title="删除" size="mini" slot="reference"></MyButton>
             </el-popconfirm>
@@ -106,7 +108,7 @@
         </el-table-column>
       </el-table>
        <!-- 按钮操作 -->
-       <el-button type="primary">保存</el-button>
+       <el-button type="primary" @click="saveData" :disabled="attrForm.attrValueList.length===0">保存</el-button>
        <el-button @click="isAddOrEditProperty=false">取消</el-button>
      </div>
     </el-card>
@@ -147,9 +149,46 @@ export default {
     }
   },
   methods:{
+    // 用户单击保存按钮
+    async saveData(){
+      //收集数据
+      let info = this.attrForm;
+      //处理数据
+        //1.删除空的数据
+        //2.删除isEdit属性
+      info.attrValueList = info.attrValueList.filter(item=>{
+        // valueName有值
+        if(item.valueName !== ''){
+          // 删除isEdit属性
+          delete item.isEdit;
+          return true;
+        }
+      });
+      //如果数据长度为0,不发送
+      if(info.attrValueList.length === 0) return;
+
+      //发送数据
+      try{
+        await this.$API.attr.addOrUpdate(info);
+        //成功干啥
+        this.$message.success(info.id?"修改成功!":"添加属性成功");
+        this.getAttrList();
+        this.isAddOrEditProperty = false;
+      }catch(error){
+        this.$message.error(info.id?"修改属性失败!"+error:"添加属性失败!"+error);
+      }
+    },
     // 用户单击删除属性
-    confirmDelete(){
+    async confirmDelete(row){
       console.log("你单击了确定删除");
+      try {
+        await this.$API.attr.delete(row.id);
+        this.$message.success("删除成功!");
+        //刷新
+        this.getAttrList();
+      } catch (error) {
+        this.$message.error("删除失败!");
+      }
     },
     // 编辑模式 => 查看模式
     toShow(row){
@@ -165,7 +204,6 @@ export default {
           return item.valueName === row.valueName;
         }
       })
-      console.log(isRepeat);
       if(isRepeat){
         //重复了
         this.$message.info("请不要输入重复的属性值!");
@@ -193,6 +231,7 @@ export default {
       this.isAddOrEditProperty = true;
       //深克隆
       this.attrForm = cloneDeep(row);
+      console.log("深克隆后的值",this.attrForm);
       //循环遍历设置响应式数据
       this.attrForm.attrValueList.forEach(item=>{
         //设置为false => 查看模式
@@ -204,9 +243,11 @@ export default {
     addProperty(){
         //添加数据占位
         this.attrForm.attrValueList.push({
-          //修改的时候需要传入id,添加的时候则为undefined
+          // 修改的时候需要传入id 代表修改
+          // 添加的时候则为undefined 代表新增
           attrId:this.attrForm.id,
-          attrName:"",
+          // attrName:"",
+          valueName:"",
           //是否是编辑模式,true为编辑模式,false为查看模式
           isEdit:true
         });

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form :inline="true" :model="cForm" class="demo-form-inline">
+    <el-form :inline="true" :model="cForm" class="demo-form-inline" :disabled="forbidden">
         <!-- 一级分类 -->
         <el-form-item label="一级分类">
           <el-select v-model="cForm.category1Id" placeholder="请选择" @change="selectCategory1">
@@ -43,6 +43,7 @@
 <script>
 export default {
   name: "CategorySelector",
+  props:["forbidden"],
   data() {
     return {
       //存储记录选中的三级分类id
