@@ -19,5 +19,9 @@ export default {
   // 分页列表
   getBaseTradeMark(page, limit) {
     return request.get(`/admin/product/baseTrademark/${page}/${limit}`);
-  }
+  },
+  // SPU所用 获取所有的品牌数据
+  getTrademarkList(){
+    return request.get("/admin/product/baseTrademark/getTrademarkList");
+  },
 }

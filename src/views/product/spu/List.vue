@@ -4,10 +4,10 @@
    <el-card>
       <CategorySelector  @changeCategory="changeCategory" :forbidden="isAddOrEditProperty"></CategorySelector>
     </el-card>
-    
+
     <el-card style="margin:20px 0">
       <div v-show="!isSKUForm && !isSPUForm">
-      <el-button type="primary" icon="el-icon-plus" @click="addorEditSPU">添加SPU</el-button>
+      <el-button type="primary" icon="el-icon-plus" @click="clickAddEditSPU">添加SPU</el-button>
         <!-- 数据展示 -->
         <el-table
           :data="records"
@@ -37,8 +37,8 @@
             label="操作"
             width="width">
             <template slot-scope="{row,$index}">
-              <MyButton title="添加SKU" type="success" icon="el-icon-plus" size="mini"></MyButton>
-              <MyButton title="修改SPU" type="primary" icon="el-icon-edit"  @click="addorEditSPU" size="mini"></MyButton>
+              <MyButton title="添加SKU" type="success" icon="el-icon-plus"  @click="clickAddSKU" size="mini"></MyButton>
+              <MyButton title="修改SPU" type="primary" icon="el-icon-edit"  @click="clickEditSPU(row)" size="mini"></MyButton>
               <MyButton title="查看SPU列表" type="info" icon="el-icon-info" size="mini"></MyButton>
               <MyButton title="删除SPU" type="danger" icon="el-icon-delete" size="mini"></MyButton>
             </template>
@@ -56,8 +56,8 @@
           layout=" prev, pager, next, jumper,->,sizes,total">
         </el-pagination>
       </div>
-     <SPUForm v-show="isSPUForm"></SPUForm>
-     <SKUForm v-show="isSKUForm"></SKUForm>
+     <SPUForm v-show="isSPUForm" ref="spu" :visible.sync="isSPUForm"></SPUForm>
+     <SKUForm v-show="isSKUForm" ref="sku"></SKUForm>
     </el-card>
 </div>
 </template>
@@ -84,9 +84,21 @@ export default {
     }
   },
   methods:{
-    // 用户单击添加SPU / 修改SPU
-    addorEditSPU(){
+    // 用户单击修改SPU
+    clickEditSPU(row){
       this.isSPUForm = true;
+      //后期如果需要可以传递数据
+      this.$refs.spu.initUpdateFormData(row.id);
+    },
+    // 用户单击添加SPU 
+    clickAddEditSPU(){
+      this.isSPUForm = true;
+      //后期如果需要可以传递数据
+      this.$refs.spu.initAddSpuFormData();
+    },
+    // 用户单击添加SKU
+    clickAddSKU(){
+      this.isSKUForm = true;
     },
     //每页显示数量被改变
     changeLimit(size){
