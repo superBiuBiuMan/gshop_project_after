@@ -40,7 +40,9 @@
               <MyButton title="添加SKU" type="success" icon="el-icon-plus"  @click="clickAddSKU" size="mini"></MyButton>
               <MyButton title="修改SPU" type="primary" icon="el-icon-edit"  @click="clickEditSPU(row)" size="mini"></MyButton>
               <MyButton title="查看SPU列表" type="info" icon="el-icon-info" size="mini"></MyButton>
-              <MyButton title="删除SPU" type="danger" icon="el-icon-delete" size="mini"></MyButton>
+              <el-popconfirm :title="`确定删除${row.spuName}吗?`" @onConfirm="deleteSpu(row.id)">
+                <MyButton title="删除SPU" type="danger" icon="el-icon-delete" slot="reference" size="mini"></MyButton>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
@@ -56,7 +58,7 @@
           layout=" prev, pager, next, jumper,->,sizes,total">
         </el-pagination>
       </div>
-     <SPUForm v-show="isSPUForm" ref="spu" :visible.sync="isSPUForm"></SPUForm>
+     <SPUForm v-show="isSPUForm" ref="spu" :visible.sync="isSPUForm" @successBack="successBack" @cancelBack="cancelBack"></SPUForm>
      <SKUForm v-show="isSKUForm" ref="sku"></SKUForm>
     </el-card>
 </div>
@@ -84,8 +86,41 @@ export default {
     }
   },
   methods:{
+    // 用户确认删除spu
+    async deleteSpu(id){
+      try {
+        await this.$API.spu.remove(id);
+        //删除成功
+        this.$message.success("删除成功!");
+        //更新数据
+        this.getAttrList(this.records.length>1?this.page:this.page-1);
+      } catch (error) {
+        //删除失败
+        this.$message.error("删除失败!");
+      }
+    },
+    // 用户单击取消
+    cancelBack(){
+      this.spuId = null;
+    },
+    // 用户成功修改/更新数据
+    successBack(){
+      if(this.spuId){
+        //存在,修改属性
+        //回到当前页
+        this.getAttrList(this.page);
+      }else{
+        //不存在,添加属性
+        //返回第一页去
+        this.getAttrList();
+      }
+      //清空,为下一个准备
+      this.spuId = null;
+    },
     // 用户单击修改SPU
     clickEditSPU(row){
+      //用于区分是修改还是删除
+      this.spuId = this.category3Id;
       this.isSPUForm = true;
       //后期如果需要可以传递数据
       this.$refs.spu.initUpdateFormData(row.id);
@@ -94,7 +129,8 @@ export default {
     clickAddEditSPU(){
       this.isSPUForm = true;
       //后期如果需要可以传递数据
-      this.$refs.spu.initAddSpuFormData();
+      this.$refs.spu.initAddSpuFormData(this.category3Id);
+      
     },
     // 用户单击添加SKU
     clickAddSKU(){

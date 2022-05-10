@@ -15,6 +15,18 @@ export default {
   //获取SPU销售详情数据(spu描述和销售属性数据表格)
   getSpuById(spuId) {
     return request.get("/admin/product/getSpuById/" + spuId);
+  },
+  //添加/更新SPU数据
+  addOrUpdate(spuInfo) {
+    //有id即为更新,无id即为新增
+    return request({
+      url: `/admin/product/${spuInfo.id ? 'update' : 'save'}SpuInfo`,
+      method: 'POST',
+      data: spuInfo
+    })
+  },
+  // 删除指定的spu
+  remove(spuId){
+    return request.delete("/admin/product/deleteSpu/"+spuId);
   }
-
 }
