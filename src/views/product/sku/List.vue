@@ -71,6 +71,7 @@
               icon="el-icon-info"
               type="info"
               title="查看详细"
+              @click="showDetail(row)"
             ></MyButton>
             <el-popconfirm :title="`确定删除${row.skuName}吗?`" @onConfirm="deleteSku(row)">
             <MyButton
@@ -95,6 +96,44 @@
         :total="total"
       >
       </el-pagination>
+      <!-- 抽屉 -->
+      <el-drawer :before-close="handleClose" :visible.sync="drawer" :with-header="false" size="50%" >
+          <!-- 名称 -->
+          <el-row>
+            <el-col :span="5">名称</el-col>
+            <el-col :span="16">{{skuInfo.skuName}}</el-col>
+          </el-row>
+          <!-- 描述 -->
+          <el-row>
+            <el-col :span="5">描述</el-col>
+            <el-col :span="16">{{skuInfo.skuDesc}}</el-col>
+          </el-row>
+          <!-- 价格 -->
+          <el-row>
+            <el-col :span="5">价格</el-col>
+            <el-col :span="16">{{skuInfo.price}}元</el-col>
+          </el-row>
+          <!-- 平台属性  -->
+          <el-row>
+            <el-col :span="5">平台属性</el-col>
+            <el-col :span="16">
+              <el-tag style="margin-right:5px" type="success" v-for="skuAttr in skuInfo.skuAttrValueList" :key="skuAttr.id">
+                  {{skuAttr.attrId + "-" + skuAttr.valueId}}
+              </el-tag>
+            </el-col>
+          </el-row>
+          <!-- 商品图片 -->
+          <el-row>
+            <el-col :span="5">商品图片</el-col>
+            <el-col :span="16">
+                <el-carousel class="sku-carousel" indicator-position :interval="5000" arrow="always" height="400px" >
+                  <el-carousel-item v-for="skuImage in skuInfo.skuImageList" :key="skuImage.id" >
+                    <img :src="skuImage.imgUrl" alt="">
+                  </el-carousel-item>
+                </el-carousel>
+            </el-col>
+          </el-row>
+      </el-drawer>
     </el-card>
   </div>
 </template>
@@ -108,12 +147,34 @@ export default {
       limit: 10,
       total: 0,
       records: [],
+      //存储skuInfo
+      skuInfo:{},
+      //控制抽屉的显示隐藏
+      drawer:false,
     };
   },
   mounted() {
     this.getSkuInfo();
   },
   methods: {
+    // 抽屉关闭之前清空原有的数据
+    handleClose(done){
+      this.skuInfo = {};
+      done();
+    },
+    //查看详情
+    async showDetail(row){
+      try {
+        //后期加一个loading,~或者骨架
+        //显示抽屉
+        this.drawer = true;
+        const result = await this.$API.sku.getSkuById(row.id);
+        this.skuInfo = result.data;
+      } catch (error) {
+        this.$message.error("查看详细sku出错!请重试!");
+        console.log("查看详细sku出错!请重试!",error);
+      }
+    },
     //删除sku
     async deleteSku(row){
       try {
@@ -124,7 +185,7 @@ export default {
         this.getSkuInfo(this.records.length>1?this.page:this.page-1);
       } catch (error) {
         this.$message.error("删除失败!请稍后重试!");
-        console.log(error);
+        console.log("删除失败!请稍后重试!",error);
       }
     },
     //商品下架
@@ -136,7 +197,7 @@ export default {
         this.$message({ type: "success", message: "下架成功!" });
       } catch (error) {
         this.$message.error("下架失败!请稍后重试!");
-        console.log(error);
+        console.log("下架失败!请稍后重试!",error);
       }
     },
     //商品上架
@@ -148,7 +209,7 @@ export default {
         this.$message({ type: "success", message: "上架成功!" });
       } catch (error) {
         this.$message.error("上架失败!请稍后重试!");
-        console.log(error);
+        console.log("上架失败!请稍后重试!",error);
       }
     },
     //每页显示数量被改变
@@ -169,12 +230,52 @@ export default {
         this.records = result.data.records;
       } catch (error) {
         this.$message.error("初始化sku数据失败!请重试!");
-        console.log(error);
+        console.log("初始化sku数据失败!请重试!",error);
       }
     },
   },
 };
 </script>
-
-<style lang="less" scoped>
+<style  scoped>
+  /* 走马灯样式 深度样式 */
+  >>>.el-carousel__item h3 {
+    color: #475669;
+    font-size: 18px;
+    opacity: 0.75;
+    line-height: 300px;
+    margin: 0;
+  }
+  
+  >>>.el-carousel__item:nth-child(2n) {
+    background-color: #99a9bf;
+  }
+  
+  >>>.el-carousel__item:nth-child(2n+1) {
+    background-color: #d3dce6;
+  }
+  /* 自定义样式 */
+  .sku-carousel{
+      width: 400px;
+      border: 1px solid #ccc;
+  }
+  .sku-carousel img{
+    width:400px;
+    height: 400px;
+  }
+  >>>.el-carousel__indicators--horizontal button{
+    background-color: gray;
+  }
+  .el-row{
+    line-height: 40px;
+  }
+  .el-col-5{
+      font-size: 18px;
+      font-weight: 700;
+      text-align: right;
+      margin-right: 20px;
+  }
+  .el-col-16{
+      font-size: 18px;
+      text-align: left;
+  }
 </style>

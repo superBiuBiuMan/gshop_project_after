@@ -22,11 +22,7 @@ export default {
   getSkuInfoFromSpuId(spuId) {
     return request.get("/admin/product/findBySpuId/" + spuId);
   },
-  //获取SPU销售详情数据(spu描述和销售属性数据表格)
-  // getSpuById(spuId) {
-  // return request.get("/admin/product/getSpuById/" + spuId);
-  // },
-
+ 
   // 获取sku数据列表
   getSkuInfo(page, limit) {
     return request.get(`/admin/product/list/${page}/${limit}`);
@@ -38,6 +34,10 @@ export default {
   //下架sku
   cancelSale(skuId) {
     return request.get(`/admin/product/cancelSale/${skuId}`);
+  },
+   //获取SKU数据
+  getSkuById(skuId) {
+    return request.get("/admin/product/getSkuById/" + skuId);
   },
   //删除sku
   deleteSku(skuId) {
