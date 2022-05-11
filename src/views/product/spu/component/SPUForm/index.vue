@@ -66,7 +66,7 @@
             prop="spuSaleAttrValueList"
             label="属性值名称列表"
             width="width">
-            <template slot-scope="{row,$index}">
+            <template slot-scope="{row}">
               <!-- @close="handleClose(tag)" -->
               <el-tag
                 v-for="(spuSaleAttr,index) in row.spuSaleAttrValueList"
@@ -191,7 +191,6 @@ export default {
     //来回切换是不会销毁重新构建的,也就是说不会重复触发mounted,也就是不会重复触发路由组件
     //所以可以使用$refs调用子类当中方法并传递数据
     async initUpdateFormData(spuId){
-
           /* 获取当前spu名称和spu的描述信息和已经具有的售卖属性 */
           // http://106.13.220.33:9260/admin/product/getSpuById/4922
           const result = await this.$API.spu.getSpuById(spuId)
@@ -201,7 +200,7 @@ export default {
 
           /* 获取当前商品SPU图片 */
           // http://106.13.220.33:9260/admin/product/spuImageList
-          const imgList = await this.$API.sku.getSpuImageList(spuId)
+          const imgList = await this.$API.spu.getSpuImageList(spuId)
           if(imgList.code === 200){
             //添加name 和 url 属性,以便可以让el-upload展示数据
             let temp = imgList.data;

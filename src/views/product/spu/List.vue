@@ -36,8 +36,8 @@
           <el-table-column
             label="操作"
             width="width">
-            <template slot-scope="{row,$index}">
-              <MyButton title="添加SKU" type="success" icon="el-icon-plus"  @click="clickAddSKU" size="mini"></MyButton>
+            <template slot-scope="{row}">
+              <MyButton title="添加SKU" type="success" icon="el-icon-plus"  @click="clickAddSKU(row)" size="mini"></MyButton>
               <MyButton title="修改SPU" type="primary" icon="el-icon-edit"  @click="clickEditSPU(row)" size="mini"></MyButton>
               <MyButton title="查看SPU列表" type="info" icon="el-icon-info" size="mini"></MyButton>
               <el-popconfirm :title="`确定删除${row.spuName}吗?`" @onConfirm="deleteSpu(row.id)">
@@ -59,7 +59,7 @@
         </el-pagination>
       </div>
      <SPUForm v-show="isSPUForm" ref="spu" :visible.sync="isSPUForm" @successBack="successBack" @cancelBack="cancelBack"></SPUForm>
-     <SKUForm v-show="isSKUForm" ref="sku"></SKUForm>
+     <SKUForm v-show="isSKUForm" ref="sku" :visible.sync="isSKUForm"></SKUForm>
     </el-card>
 </div>
 </template>
@@ -82,7 +82,7 @@ export default {
       records:[],
       //控制SPUForm和SKUForm的显示隐藏和数据展示的显示隐藏
       isSPUForm:false,
-      isSKUForm:false
+      isSKUForm:true
     }
   },
   methods:{
@@ -123,6 +123,7 @@ export default {
       this.spuId = this.category3Id;
       this.isSPUForm = true;
       //后期如果需要可以传递数据
+      //传入1,2,3级别id
       this.$refs.spu.initUpdateFormData(row.id);
     },
     // 用户单击添加SPU 
@@ -130,11 +131,11 @@ export default {
       this.isSPUForm = true;
       //后期如果需要可以传递数据
       this.$refs.spu.initAddSpuFormData(this.category3Id);
-      
     },
     // 用户单击添加SKU
-    clickAddSKU(){
+    clickAddSKU(row){
       this.isSKUForm = true;
+      this.$refs.sku.initUpdateFormData(row,this.category1Id,this.category2Id);
     },
     //每页显示数量被改变
     changeLimit(size){

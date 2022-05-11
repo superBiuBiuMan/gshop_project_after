@@ -26,7 +26,11 @@ export default {
     })
   },
   // 删除指定的spu
-  remove(spuId){
-    return request.delete("/admin/product/deleteSpu/"+spuId);
+  remove(spuId) {
+    return request.delete("/admin/product/deleteSpu/" + spuId);
+  },
+  //获取spu的图片列表数据
+  getSpuImageList(skuId) {
+    return request.get("/admin/product/spuImageList/" + skuId)
   }
 }
