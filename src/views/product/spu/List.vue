@@ -82,7 +82,7 @@ export default {
       records:[],
       //控制SPUForm和SKUForm的显示隐藏和数据展示的显示隐藏
       isSPUForm:false,
-      isSKUForm:true
+      isSKUForm:false
     }
   },
   methods:{
@@ -135,6 +135,7 @@ export default {
     // 用户单击添加SKU
     clickAddSKU(row){
       this.isSKUForm = true;
+      console.log(row);
       this.$refs.sku.initUpdateFormData(row,this.category1Id,this.category2Id);
     },
     //每页显示数量被改变

@@ -87,13 +87,13 @@
             width="width">
             <template slot-scope="{row}">
               <el-button type="primary" v-if="row.isDefault === '0'" @click="setDefaultImage(row)">设为默认</el-button>
-              <el-tag v-else type="success">默认</el-tag>
+              <el-tag v-else type="success" size="mini">默认</el-tag>
             </template>
           </el-table-column>
         </el-table>
         <!-- 按钮操作 -->
         <!-- @click="saveInfo" -->
-        <el-button type="primary">保存</el-button>
+        <el-button type="primary" @click="saveInfo">保存</el-button>
         <!-- 同步取消 -->
         <el-button @click="$emit('update:visible',false)">取消</el-button>
       </el-form-item>
@@ -110,6 +110,7 @@ export default {
           // 父组件传递
           category3Id: "",
           tmId: "",
+          spuId: "", // SPU的id
           //v-model直接收集
           price: "",
           skuDesc: "",
@@ -157,6 +158,53 @@ export default {
     }
   },
   methods:{
+    // 用户单击'保存'按钮
+    async saveInfo(){
+      //0.发送前准备
+      let {price,skuDesc,skuName,weight} = this.skuForm;
+      if(!price || !skuDesc || !skuName || !weight){
+        this.$message.info("请输入完整的信息!");
+        return;
+      }
+      //1.收集数据
+      let {attrInfoList,spuSaleAttrList,userSelectImageList} = this;
+      //2.整理数据
+        //平台属性整理
+      this.skuForm.skuAttrValueList = attrInfoList.reduce((prev,item)=>{
+        if(item.attrIdAndValueId){
+          let [attrId,valueId] = item.attrIdAndValueId.split(":");
+          prev.push({attrId,valueId});
+        }
+        return prev;
+      },[])
+        //销售属性
+      this.skuForm.skuSaleAttrValueList = spuSaleAttrList.reduce((prev,item)=>{
+        if(item.saleIdAndsaleAttrId){
+          let [saleAttrId,saleAttrValueId] = item.saleIdAndsaleAttrId.split(":");
+          prev.push({saleAttrId,saleAttrValueId});
+        }
+        return prev;
+      },[])
+        //图片列表
+      this.skuForm.skuImageList = userSelectImageList.map(item => {
+          return {
+            imgName:item.imgName,
+            imgUrl:item.imgUrl,
+            isDefault:item.isDefault,
+            spuImgId:item.id
+          }
+      })
+      //3.发送请求
+      try {
+        //4.成功干嘛
+        const result = await this.$API.sku.saveSkuInfo(this.skuForm);
+        this.$message.success("保存成功!");
+      } catch (error) {
+        //5.失败干嘛
+        this.$message.error("保存失败!");
+        console.log(error);
+      }
+    },
     // 用户单击'设为默认'
     setDefaultImage(row){
       //排他思想
@@ -173,6 +221,12 @@ export default {
     //初始化数据显示
     initUpdateFormData(row,category1Id,category2Id){
       this.spu = row;
+      //存储category3ID
+      this.skuForm.category3Id = row.category3Id;
+      //存储tmId
+      this.skuForm.tmId = row.tmId;
+      //SPU的id
+      this.skuForm.spuId = row.id;
       // http://106.13.220.33:9260/admin/product/spuImageList/6429 //row.id
       const promise1 = this.$API.sku.getSpuImageList(row.id);
       // http://106.13.220.33:9260/admin/product/spuSaleAttrList/6429 //row.id

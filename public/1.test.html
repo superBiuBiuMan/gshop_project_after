@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    var a = [{
+      "id": 106,
+      "attrName": "手机一级",
+      "categoryId": 2,
+      "categoryLevel": 1,
+      "attrValueList": [{
+        "id": 176,
+        "valueName": "安卓手机",
+        "attrId": 106
+      }, {
+        "id": 175,
+        "valueName": "苹果手机",
+        "attrId": 106
+      }],
+      "attrIdAndValueId": "106:176"
+    }, {
+      "id": 107,
+      "attrName": "二级手机",
+      "categoryId": 13,
+      "categoryLevel": 2,
+      "attrValueList": [{
+        "id": 177,
+        "valueName": "小米",
+        "attrId": 107
+      }, {
+        "id": 179,
+        "valueName": "苹果",
+        "attrId": 107
+      }, {
+        "id": 178,
+        "valueName": "华为",
+        "attrId": 107
+      }]
+    }, {
+      "id": 105,
+      "attrName": "品牌",
+      "categoryId": 62,
+      "categoryLevel": 3,
+      "attrValueList": [{
+        "id": 174,
+        "valueName": "国外",
+        "attrId": 105
+      }, {
+        "id": 172,
+        "valueName": "国内",
+        "attrId": 105
+      }]
+    }]
+    
+
+    // array.filter(item)item相当于是常量,只要不改变item的指向,里面的数据可以随意更改
+    // attrIdAndValueId
+    // var b  = a.filter(item => {
+    //     if(item.attrIdAndValueId){
+    //         let [attrId,valueId] = item.attrIdAndValueId.split(":");
+    //         item.attrName="aaaaaa"
+    //         // var cc = {attrId,valueId}
+    //         // item = cc;
+    //         return true
+    //     }
+    // })
+    // console.log(a);
+    // console.log(b);
+
+  </script>
+</body>
+
+</html>

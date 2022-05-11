@@ -11,5 +11,10 @@ export default {
   */
   getSpuSaleAttrList(spuId) {
     return request.get(`/admin/product/spuSaleAttrList/${spuId}`)
+  },
+  //保存sku信息
+  // POST /admin/product/saveSkuInfo
+  saveSkuInfo(info){
+    return request.post("/admin/product/saveSkuInfo",info);
   }
 }
