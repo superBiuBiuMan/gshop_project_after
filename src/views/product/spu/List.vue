@@ -39,9 +39,9 @@
             <template slot-scope="{row}">
               <MyButton title="添加SKU" type="success" icon="el-icon-plus"  @click="clickAddSKU(row)" size="mini"></MyButton>
               <MyButton title="修改SPU" type="primary" icon="el-icon-edit"  @click="clickEditSPU(row)" size="mini"></MyButton>
-              <MyButton title="查看SPU列表" type="info" icon="el-icon-info" size="mini"></MyButton>
+              <MyButton title="查看SKU列表" type="info" icon="el-icon-info" size="mini" @click="showSPUList(row)"></MyButton>
               <el-popconfirm :title="`确定删除${row.spuName}吗?`" @onConfirm="deleteSpu(row.id)">
-                <MyButton title="删除SPU" type="danger" icon="el-icon-delete" slot="reference" size="mini"></MyButton>
+                <MyButton title="删除SPU" style="margin-left:10px" type="danger" icon="el-icon-delete" slot="reference" size="mini"></MyButton>
               </el-popconfirm>
             </template>
           </el-table-column>
@@ -58,8 +58,41 @@
           layout=" prev, pager, next, jumper,->,sizes,total">
         </el-pagination>
       </div>
-     <SPUForm v-show="isSPUForm" ref="spu" :visible.sync="isSPUForm" @successBack="successBack" @cancelBack="cancelBack"></SPUForm>
-     <SKUForm v-show="isSKUForm" ref="sku" :visible.sync="isSKUForm"></SKUForm>
+     <SPUForm v-show="isSPUForm" ref="spu" :visible.sync="isSPUForm" @successBack="successBackSPU" @cancelBack="cancelBackSPU"></SPUForm>
+     <SKUForm v-show="isSKUForm" ref="sku" :visible.sync="isSKUForm"  ></SKUForm>
+     <el-dialog :title="`${selectSPU.spuName}的SKU列表`" :visible.sync="showSKUInfoDialog" :before-close="handelCloseDialog">
+          <el-table
+            :data="skuAttrInfo"
+            v-loading="loading"
+            style="width: 100%">
+            <!-- 名称 -->
+            <el-table-column
+              prop="skuName"
+              label="名称"
+              width="width">
+            </el-table-column>
+            <!-- 价格 -->
+            <el-table-column
+              prop="price"
+              label="价格(元)"
+              width="width">
+            </el-table-column>
+            <!-- 重量 -->
+            <el-table-column
+              prop="weight"
+              label="重量(KG)"
+              width="width">
+            </el-table-column>
+            <!-- 默认图片  -->
+            <el-table-column
+              label="默认图片"
+              width="width">
+              <template slot-scope="{row}">
+                <img :src="row.skuDefaultImg" alt="" style="width:100px;height:100px">
+              </template>
+            </el-table-column>
+          </el-table>
+      </el-dialog>
     </el-card>
 </div>
 </template>
@@ -82,10 +115,42 @@ export default {
       records:[],
       //控制SPUForm和SKUForm的显示隐藏和数据展示的显示隐藏
       isSPUForm:false,
-      isSKUForm:false
+      isSKUForm:false,
+      //SPU当中的sku属性列表
+      skuAttrInfo:[],
+      //控制sku属性显示/隐藏
+      showSKUInfoDialog:false,
+      //选中显示的SPU的数据
+      selectSPU:{},     
+      //sku表格数据的加载loading效果
+      loading:true,
     }
   },
   methods:{
+    //关闭dialog之前的回调
+    handelCloseDialog(done){
+      //初始化
+      this.loading = true;
+      //数据清空
+      this.skuAttrInfo = [];
+      //结束对话框
+      done();
+    },
+    // 查看SKU列表
+    async showSPUList(row){
+      this.loading = true;
+      //显示dialog
+      this.showSKUInfoDialog = true;
+      this.selectSPU = row;
+      try {
+        const result = await this.$API.sku.getSkuInfoFromSpuId(row.id);
+        //获取数据成功
+        this.loading = false;
+        this.skuAttrInfo = result.data;
+      } catch (error) {
+        this.$message.error("获取SKU失败!请重试!");
+      }
+    },
     // 用户确认删除spu
     async deleteSpu(id){
       try {
@@ -100,11 +165,11 @@ export default {
       }
     },
     // 用户单击取消
-    cancelBack(){
+    cancelBackSPU(){
       this.spuId = null;
     },
     // 用户成功修改/更新数据
-    successBack(){
+    successBackSPU(){
       if(this.spuId){
         //存在,修改属性
         //回到当前页
@@ -135,7 +200,6 @@ export default {
     // 用户单击添加SKU
     clickAddSKU(row){
       this.isSKUForm = true;
-      console.log(row);
       this.$refs.sku.initUpdateFormData(row,this.category1Id,this.category2Id);
     },
     //每页显示数量被改变

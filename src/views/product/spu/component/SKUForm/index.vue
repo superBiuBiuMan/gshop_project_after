@@ -95,7 +95,7 @@
         <!-- @click="saveInfo" -->
         <el-button type="primary" @click="saveInfo">保存</el-button>
         <!-- 同步取消 -->
-        <el-button @click="$emit('update:visible',false)">取消</el-button>
+        <el-button @click="cancel">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -158,6 +158,46 @@ export default {
     }
   },
   methods:{
+    // 用户单击'取消'
+    cancel(){
+      //清空数据
+      this.resetData();
+      this.$emit("update:visible",false);
+    },
+    // 清空数据
+    resetData(){
+      this.skuForm = {
+          // 父组件传递
+          category3Id: "",
+          tmId: "",
+          spuId: "", // SPU的id
+          //v-model直接收集
+          price: "",
+          skuDesc: "",
+          skuName: "",
+          weight: "",
+          //代码收集
+          // 默认显示图片 
+          skuDefaultImg: "",
+          //平台属性
+          skuAttrValueList: [
+            //收集attrId,valueId即可
+          ],
+          //销售属性
+          skuSaleAttrValueList: [
+            //收集 saleAttrId 和  saleAttrValueId即可
+          ],
+          //sku当中的全部图片列表,我们要从中选几张作为当前sku的图片
+          skuImageList:[],
+      };
+      this.spu = {};
+      //所有的SPU图片
+      this.spuImageList = [];
+      //勾选中的图片
+      this.userSelectImageList = [];
+      this.spuSaleAttrList = [];
+      this.attrInfoList = [];
+    },
     // 用户单击'保存'按钮
     async saveInfo(){
       //0.发送前准备
@@ -199,6 +239,10 @@ export default {
         //4.成功干嘛
         const result = await this.$API.sku.saveSkuInfo(this.skuForm);
         this.$message.success("保存成功!");
+        //返回并且数据要清空
+        this.$emit("update:visible",false);
+        //清空数据
+        this.resetData();
       } catch (error) {
         //5.失败干嘛
         this.$message.error("保存失败!");
