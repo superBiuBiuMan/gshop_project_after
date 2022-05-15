@@ -60,7 +60,8 @@ export default {
   data() {
     //用户名验证
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
+      //!validUsername(value)
+      if (value.length<=4) {
         //传入错误信息,不放行
         callback(new Error('请输入正确的用户名'))
       } else {

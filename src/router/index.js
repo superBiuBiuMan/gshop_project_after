@@ -6,6 +6,8 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 
+
+
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -31,19 +33,18 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
+// 路由分为三种,常量路由(比如首页),异步路由(不同用户不同路由,根据权限来定的),任意路由(比如404)
 export const constantRoutes = [
   {
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
   },
-
   {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
   },
-
   {
     path: '/',
     component: Layout,
@@ -53,62 +54,87 @@ export const constantRoutes = [
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
       //侧边栏显示的文字和图标及面包屑当中显示
-      meta: { title: '首页', icon: 'dashboard' }
+      meta: {
+        title: '首页',
+        icon: 'dashboard'
+      }
     }]
   },
 
+
+]
+
+//异步路由
+export const asyncRoutes = [
   {
-    path:"/product",
-    name:"Product",
+    path: "/product",
+    name: "Product",
     //首先得显示一级路由组件
-    component:Layout,
-    meta:{title:"商品管理",icon:'el-icon-s-shop'},
-    //默认的二级路由
-    redirect:"/product/trademark/list",
-    children:[
-      //重定向等同于
-      // {
-      //   path:"",
-      //   redirect:"/product/trademark/list"
-      // },
-      {
-        path:'trademark/list',
-        name:"Trademark",
-        component: () => import("@/views/product/trademark/List.vue"),
-        //用于在侧边栏和面包屑当中显示
-        meta:{title:"品牌管理"}
-      },
-      {
-        path:'attr/list',
-        name:"Attr",
-        component: () => import("@/views/product/attr/List.vue"),
-        //用于在侧边栏和面包屑当中显示
-        meta:{title:"平台属性管理"}
-      },
-      {
-        path:"spu/list",
-        name:"Spu",
-        component: () => import("@/views/product/spu/List.vue"),
-        meta:{title:"SPU管理"}
-      },
-      {
-        path:"sku/list",
-        name:"Sku",
-        component: () => import("@/views/product/sku/List.vue"),
-        meta:{title:"SKU管理"}
-      },
- 
-    ]
+    component: Layout,
+    meta: {
+      title: "商品管理",
+      icon: 'el-icon-s-shop'
   },
+  //默认的二级路由
+  redirect: "/product/trademark/list",
+  children: [
+    //重定向等同于
+    // {
+    //   path:"",
+    //   redirect:"/product/trademark/list"
+    // },
+    {
+      path: 'trademark/list',
+      name: "Trademark",
+      component: () => import("@/views/product/trademark/List.vue"),
+      //用于在侧边栏和面包屑当中显示
+      meta: {
+        title: "品牌管理"
+      }
+    },
+    {
+      path: 'attr/list',
+      name: "Attr",
+      component: () => import("@/views/product/attr/List.vue"),
+      //用于在侧边栏和面包屑当中显示
+      meta: {
+        title: "平台属性管理"
+      }
+    },
+    {
+      path: "spu/list",
+      name: "Spu",
+      component: () => import("@/views/product/spu/List.vue"),
+      meta: {
+        title: "SPU管理"
+      }
+    },
+    {
+      path: "sku/list",
+      name: "Sku",
+      component: () => import("@/views/product/sku/List.vue"),
+      meta: {
+        title: "SKU管理"
+      }
+    },
+  ]
+}, ]
 
-
+//任意路由
+export const anyRoutes = [
   // 404 page must be placed at the end !!!(404页面必须被放置在末尾)
-  { path: '*', redirect: '/404', hidden: true }
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
 ]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: constantRoutes
 })
 
