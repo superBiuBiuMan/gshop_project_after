@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form :inline="true" :model="cForm" class="demo-form-inline" :disabled="forbidden">
+    <el-form :inline="true" :model="cForm" class="demo-form-inline" :disabled="forbidden" >
         <!-- 一级分类 -->
         <el-form-item label="一级分类">
           <el-select v-model="cForm.category1Id" placeholder="请选择" @change="selectCategory1">

@@ -5,7 +5,7 @@
     </el-card>
     <el-card style="margin-top: 20px">
       <div v-show="!isAddOrEditProperty">
-        <el-button type="primary" icon="el-icon-plus" :disabled="!category3Id" @click="showAddDiv">添加属性</el-button>
+        <el-button type="primary" icon="el-icon-plus" :disabled="!category3Id" @click="showAddDiv" v-if="$hasBtn('btn.Attr.add')">添加属性</el-button>
         <el-table
           border
           :data="attrList"
@@ -38,9 +38,9 @@
             label="操作"
             width="150">
             <template slot-scope="{row}">
-                <MyButton type="warning" icon="el-icon-edit" size="mini" title="修改属性" @click="editProperty(row)"></MyButton>
+                <MyButton type="warning" icon="el-icon-edit" size="mini" title="修改属性" @click="editProperty(row)" v-if="$hasBtn('btn.Attr.update')"></MyButton>
                 <el-popconfirm :title="`确定删除${row.attrName}吗?`" @onConfirm="confirmDelete(row)">
-                  <MyButton type="danger" icon="el-icon-delete" size="mini" title="删除属性" slot="reference"></MyButton>
+                  <MyButton type="danger" icon="el-icon-delete" size="mini" title="删除属性" slot="reference" v-if="$hasBtn('btn.Attr.remove')"></MyButton>
                 </el-popconfirm>
             </template>
           </el-table-column>

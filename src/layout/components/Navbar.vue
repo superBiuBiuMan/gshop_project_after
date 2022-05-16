@@ -1,9 +1,11 @@
 <template>
   <div class="navbar">
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-
     <breadcrumb class="breadcrumb-container" />
-
+    <!-- <div style="> -->
+    <div class="loginuser">
+      登录用户:{{name}}
+    </div>
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
@@ -45,7 +47,10 @@ export default {
     ...mapGetters([
       'sidebar',
       'avatar'
-    ])
+    ]),
+    name(){
+      return this.$store.state.user.name;
+    }
   },
   methods: {
     toggleSideBar() {
@@ -74,7 +79,6 @@ export default {
     cursor: pointer;
     transition: background .3s;
     -webkit-tap-highlight-color:transparent;
-
     &:hover {
       background: rgba(0, 0, 0, .025)
     }
@@ -82,6 +86,12 @@ export default {
 
   .breadcrumb-container {
     float: left;
+  }
+  .loginuser{
+    line-height: 50px;
+    // float:left;
+    position: absolute;
+    left:50%
   }
 
   .right-menu {

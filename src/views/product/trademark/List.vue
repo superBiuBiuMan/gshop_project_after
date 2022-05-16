@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 添加按钮 -->
-    <el-button type="primary" icon="el-icon-plus" @click="showDialog">添加</el-button>
+    <el-button type="primary" icon="el-icon-plus" @click="showDialog" v-if="$hasBtn('btn.Trademark.add')">添加</el-button>
     <!-- 数据展示 -->
     <!-- type定义类型为自增index -->
     <!-- label 当前段的名称 -->
@@ -34,8 +34,8 @@
           <!-- 由于要为每一个数据绑定,所以要循环,这样子才能传递数据 -->
           <template slot-scope="{row}">
             <!-- 传递当前循环的一个数据给函数 -->
-            <el-button type="warning" icon="el-icon-edit" size="mini" @click="showEditDialog(row)">编辑</el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeDialog(row)">删除</el-button>
+            <el-button type="warning" icon="el-icon-edit" size="mini" @click="showEditDialog(row)" v-if="$hasBtn('btn.Trademark.update')">编辑</el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeDialog(row)" v-if="$hasBtn('btn.Trademark.remove')">删除</el-button>
           </template>
       </el-table-column>
     </el-table>

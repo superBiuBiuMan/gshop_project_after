@@ -34,8 +34,7 @@ import Layout from '@/layout'
  * all roles can be accessed
  */
 // 路由分为三种,常量路由(比如首页),异步路由(不同用户不同路由,根据权限来定的),任意路由(比如404)
-export const constantRoutes = [
-  {
+export const constantRoutes = [{
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
@@ -65,8 +64,7 @@ export const constantRoutes = [
 ]
 
 //异步路由
-export const asyncRoutes = [
-  {
+export const asyncRoutes = [{
     path: "/product",
     name: "Product",
     //首先得显示一级路由组件
@@ -74,51 +72,102 @@ export const asyncRoutes = [
     meta: {
       title: "商品管理",
       icon: 'el-icon-s-shop'
+    },
+    //默认的二级路由
+    redirect: "/product/trademark/list",
+    children: [
+      //重定向等同于
+      // {
+      //   path:"",
+      //   redirect:"/product/trademark/list"
+      // },
+      {
+        path: 'trademark/list',
+        name: "Trademark",
+        component: () => import("@/views/product/trademark/List.vue"),
+        //用于在侧边栏和面包屑当中显示
+        meta: {
+          title: "品牌管理"
+        }
+      },
+      {
+        path: 'attr/list',
+        name: "Attr",
+        component: () => import("@/views/product/attr/List.vue"),
+        //用于在侧边栏和面包屑当中显示
+        meta: {
+          title: "平台属性管理"
+        }
+      },
+      {
+        path: "spu/list",
+        name: "Spu",
+        component: () => import("@/views/product/spu/List.vue"),
+        meta: {
+          title: "SPU管理"
+        }
+      },
+      {
+        path: "sku/list",
+        name: "Sku",
+        component: () => import("@/views/product/sku/List.vue"),
+        meta: {
+          title: "SKU管理"
+        }
+      },
+    ]
   },
-  //默认的二级路由
-  redirect: "/product/trademark/list",
-  children: [
-    //重定向等同于
-    // {
-    //   path:"",
-    //   redirect:"/product/trademark/list"
-    // },
-    {
-      path: 'trademark/list',
-      name: "Trademark",
-      component: () => import("@/views/product/trademark/List.vue"),
-      //用于在侧边栏和面包屑当中显示
-      meta: {
-        title: "品牌管理"
-      }
+  //权限管理 
+  {
+    path: '/acl',
+    component: Layout,
+    name: 'Acl',
+    redirect: 'acl/user/list',
+    meta: {
+      title: '权限管理',
+      icon: 'el-icon-s-tools'
     },
-    {
-      path: 'attr/list',
-      name: "Attr",
-      component: () => import("@/views/product/attr/List.vue"),
-      //用于在侧边栏和面包屑当中显示
-      meta: {
-        title: "平台属性管理"
+    children: [{
+        path: 'user/list',
+        component: () =>
+          import('@/views/acl/user/list'),
+        name: 'User',
+        meta: {
+          title: '用户管理'
+        }
+      },
+      {
+        path: 'role/list',
+        component: () =>
+          import('@/views/acl/role/list'),
+        name: 'Role',
+        meta: {
+          title: '角色管理'
+        }
+      },
+      {
+        path: 'role/auth/:id',
+        component: () =>
+          import('@/views/acl/role/roleAuth'),
+        name: 'RoleAuth',
+        meta: {
+          activeMenu: '/acl/role/list',
+          title: '角色授权'
+        },
+        hidden: true,
+      },
+      {
+        path: 'permission/list',
+        component: () =>
+          import('@/views/acl/permission/list'),
+        name: 'Permission',
+        meta: {
+          title: '菜单管理'
+        }
       }
-    },
-    {
-      path: "spu/list",
-      name: "Spu",
-      component: () => import("@/views/product/spu/List.vue"),
-      meta: {
-        title: "SPU管理"
-      }
-    },
-    {
-      path: "sku/list",
-      name: "Sku",
-      component: () => import("@/views/product/sku/List.vue"),
-      meta: {
-        title: "SKU管理"
-      }
-    },
-  ]
-}, ]
+    ]
+  },
+]
 
 //任意路由
 export const anyRoutes = [

@@ -44,15 +44,15 @@
         <el-table-column label="操作" width="250" align="center">
           <template slot-scope="{ row }">
             <MyButton
-              v-if="row.isSale === 1"
+              v-if="row.isSale === 1 && $hasBtn('btn.Sku.updown')"
               size="mini"
               icon="el-icon-bottom"
               type="success"
               title="下架"
-              @click="cancelSale(row)"
-            ></MyButton>
+              @click="cancelSale(row)" ></MyButton>
+              <!-- v-else -->
             <MyButton
-              v-else
+              v-if="row.isSale !=1 && $hasBtn('btn.Sku.updown')"
               size="mini"
               icon="el-icon-top"
               type="info"
@@ -63,6 +63,7 @@
               size="mini"
               icon="el-icon-edit"
               type="primary"
+              v-if="$hasBtn('btn.Sku.update')"
               @click="$message({type:'info',message:'正在开发中...'})"
               title="修改"
             ></MyButton>
@@ -71,6 +72,7 @@
               icon="el-icon-info"
               type="info"
               title="查看详细"
+              v-if="$hasBtn('btn.Sku.detail')"
               @click="showDetail(row)"
             ></MyButton>
             <el-popconfirm :title="`确定删除${row.skuName}吗?`" @onConfirm="deleteSku(row)">
@@ -80,6 +82,7 @@
               icon="el-icon-delete"
               style="margin-left:10px"
               type="danger"
+              v-if="$hasBtn('btn.Sku.remove')"
               title="删除"></MyButton>
             </el-popconfirm>
           </template>

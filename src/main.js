@@ -20,6 +20,8 @@ import '@/permission' // permission control
 
 import * as $API from "@/api/index.js";// API接口文档
 
+import hasBtn from "@/utils/permission";//用户按钮权限判断
+
 //三级分类
 import CategorySelector from "@/components/CategorySelector"
 //自定义提示按钮
@@ -49,7 +51,8 @@ Vue.use(ElementUI, { locale })
 
 Vue.config.productionTip = false
 
-Vue.prototype.$API = $API;
+Vue.prototype.$API = $API;//API接口
+Vue.prototype.$hasBtn = hasBtn;//判断是否有权限
 new Vue({
   el: '#app',
   router,

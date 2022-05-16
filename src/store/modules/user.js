@@ -1,9 +1,12 @@
-import { login, logout, getInfo } from '@/api/user'
+// import { login, logout, getInfo } from '@/api/user'
+import {login,logout,getInfo} from "@/api/acl/user"
 // 通过cookie存储用户token
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 //3种路由全选
 import {constantRoutes,asyncRoutes,anyRoutes} from "@/router"
+//深克隆依赖
+import cloneDeep from "lodash/cloneDeep"
 const getDefaultState = () => {
   return {
     //第一次从cookie当中读取
@@ -19,7 +22,9 @@ const getDefaultState = () => {
     //服务器获取的当前用户可以操作的全部异步路由数据
     allAsyncRoutes:[],
     //当前登录用户可具有的路由全选
-    currentAsyncRoutes:[]
+    currentAsyncRoutes:[],
+    //用户拥有的(暂存存储)
+    userAsyncRoutes:[],
   }
 }
 
@@ -41,12 +46,17 @@ const mutations = {
     state.roles = info.roles;
     //所有异步路由数据
     state.allAsyncRoutes = info.routes;
+    //可操作的按钮权限
+    state.buttons = info.buttons;
   },
   //设置最终用户可拥有的路由
   SET_ROUTES(state,userAsyncRoutes){
     //常量路由和异步路由和任意路由合并
     state.currentAsyncRoutes = constantRoutes.concat(userAsyncRoutes,anyRoutes);
+    state.userAsyncRoutes = userAsyncRoutes;
     //动态给路由器添加路由
+    // console.log("aa");
+    // console.log([...userAsyncRoutes,...anyRoutes]);
     router.addRoutes([...userAsyncRoutes,...anyRoutes]);
   }
 }
@@ -62,7 +72,7 @@ function getOwnAsyncRoutes(allAsyncRoutes,selfRoutes){
     if(selfRoutes.includes(item.name)){
       //含有二级路由
       if(item.children && item.children.length){
-        getOwnAsyncRoutes(item.children,selfRoutes);
+        item.children = getOwnAsyncRoutes(item.children,selfRoutes);
       }
       return true;
     }
@@ -97,7 +107,9 @@ const actions = {
           return reject('认证失败!请再次尝试登录!')
         }
          //成功获取到用户数据,设置用户路由到state当中
-        commit("SET_ROUTES",getOwnAsyncRoutes(asyncRoutes,data.routes))
+        //这里会导致所有异步路由数据的children被修改(因为是引用数据类型),所以我们不能直接在这个初始值上修改
+        //应该修改深度克隆后的数据
+        commit("SET_ROUTES",getOwnAsyncRoutes(cloneDeep(asyncRoutes),data.routes))
         //设置用户基本信息
         commit("SET_USERINFO",data)
         resolve(data)

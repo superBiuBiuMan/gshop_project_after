@@ -1,13 +1,14 @@
 <template>
 <div>
     <!-- 三级联动 -->
-   <el-card>
+   <el-card v-show="isShowCategoryList">
       <CategorySelector  @changeCategory="changeCategory" :forbidden="isAddOrEditProperty"></CategorySelector>
+      <!-- <CategorySelector  @changeCategory="changeCategory" :isShowList="isShowList"></CategorySelector> -->
     </el-card>
 
     <el-card style="margin:20px 0">
       <div v-show="!isSKUForm && !isSPUForm">
-      <el-button type="primary" icon="el-icon-plus" @click="clickAddEditSPU">添加SPU</el-button>
+      <el-button type="primary" icon="el-icon-plus" @click="clickAddEditSPU" :disabled='!category3Id' v-if="$hasBtn('btn.Spu.add')">添加SPU</el-button>
         <!-- 数据展示 -->
         <el-table
           :data="records"
@@ -37,11 +38,11 @@
             label="操作"
             width="width">
             <template slot-scope="{row}">
-              <MyButton title="添加SKU" type="success" icon="el-icon-plus"  @click="clickAddSKU(row)" size="mini"></MyButton>
-              <MyButton title="修改SPU" type="primary" icon="el-icon-edit"  @click="clickEditSPU(row)" size="mini"></MyButton>
-              <MyButton title="查看SKU列表" type="info" icon="el-icon-info" size="mini" @click="showSPUList(row)"></MyButton>
+              <MyButton title="添加SKU" type="success" icon="el-icon-plus"  @click="clickAddSKU(row)" size="mini" v-if="$hasBtn('btn.Spu.addsku')"></MyButton>
+              <MyButton title="修改SPU" type="primary" icon="el-icon-edit"  @click="clickEditSPU(row)" size="mini" v-if="$hasBtn('btn.Spu.update')"></MyButton>
+              <MyButton title="查看SKU列表" type="info" icon="el-icon-info" size="mini" @click="showSPUList(row)" v-if="$hasBtn('btn.Spu.skus')"></MyButton>
               <el-popconfirm :title="`确定删除${row.spuName}吗?`" @onConfirm="deleteSpu(row.id)">
-                <MyButton title="删除SPU" style="margin-left:10px" type="danger" icon="el-icon-delete" slot="reference" size="mini"></MyButton>
+                <MyButton title="删除SPU" style="margin-left:10px" type="danger" icon="el-icon-delete" slot="reference" size="mini" v-if="$hasBtn('btn.Spu.delete')"></MyButton>
               </el-popconfirm>
             </template>
           </el-table-column>
@@ -124,6 +125,12 @@ export default {
       selectSPU:{},     
       //sku表格数据的加载loading效果
       loading:true,
+    }
+  },
+  computed:{
+    //控制三级联动的显示隐藏
+    isShowCategoryList(){
+      return !this.isSKUForm;
     }
   },
   methods:{
