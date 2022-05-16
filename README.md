@@ -1,90 +1,113 @@
-# vue-admin-template
+## 尚品汇后台练习
 
-English | [简体中文](./README-zh.md)
+* 在线演示地址1(后台项目): http://82.156.205.62:9261
+* 在线演示地址2(后台项目): http://82.156.205.62:9260
 
-> A minimal vue admin template with Element UI & axios & iconfont & permission control & lint
+### 首页登录
 
-**Live demo:** http://panjiachen.github.io/vue-admin-template
+![登录界面](README.assets/202205161600234.png)
 
+### 首页图表
 
-**The current version is `v4.0+` build on `vue-cli`. If you want to use the old version , you can switch branch to [tag/3.11.0](https://github.com/PanJiaChen/vue-admin-template/tree/tag/3.11.0), it does not rely on `vue-cli`**
+![首页图表](README.assets/202205161601799.png)
 
-## Build Setup
+### 品牌管理
 
-```bash
-# clone the project
-git clone https://github.com/PanJiaChen/vue-admin-template.git
+![品牌管理](README.assets/202205161601468.png)
 
-# enter the project directory
-cd vue-admin-template
+### 权限管理
 
-# install dependency
+![权限管理-用户管理](README.assets/202205161602080.png)
+
+![](README.assets/202205161600121.png)
+
+### 商品管理
+
+![商品管理](README.assets/202205161601594.png)
+
+### 项目依赖安装
+
+```
 npm install
+```
 
-# develop
+### 项目运行
+```
 npm run dev
 ```
 
-This will automatically open http://localhost:9528
-
-## Build
-
-```bash
-# build for test environment
-npm run build:stage
-
-# build for production environment
+### 项目打包编译
+```
+//构建生产环境
 npm run build:prod
+//构成测试环境
+npm run build:stage
 ```
 
-## Advanced
+#### 如果想在nginx上线,注意配置转发和删除.env.production的里面的内容(以生产环境打包为例)
 
-```bash
-# preview the release environment effect
-npm run preview
+* 需要删除Vue_APP_BASE_API里面的内容~
 
-# preview the release environment effect + static resource analysis
-npm run preview -- --report
+![.env.production文件](README.assets/202205161644946.png)
 
-# code format check
-npm run lint
+* nginx转发设置
 
-# code format check and auto fix
-npm run lint -- --fix
+  ![nginx转发设置](README.assets/202205161646156.png)
+
+### 地址
+
+#### 国外
+```
+https://github.com/superBiuBiuMan/gshop_project_after
+```
+#### 国内
+```
+https://gitee.com/superBiuBiu/gshop_project_after
 ```
 
-Refer to [Documentation](https://panjiachen.github.io/vue-element-admin-site/guide/essentials/deploy.html) for more information
+#### 如果角色权限不能正常赋予请看这里
 
-## Demo
+* elementUI tree在收集数据的时候,并不会在上几级的数据放入,所以会导致用户权限不能正常赋予,这里给出了解决办法
 
-![demo](https://github.com/PanJiaChen/PanJiaChen.github.io/blob/master/images/demo.gif)
+```javascript
+vue elementUI tree树形控件获取父节点ID的实例
 
-## Extra
+修改源码:
+情况1: element-ui没有实现按需引入打包
+  node_modules\element-ui\lib\element-ui.common.js    25382行修改源码  去掉 'includeHalfChecked &&'
+  // if ((child.checked || includeHalfChecked && child.indeterminate) && (!leafOnly || leafOnly && child.isLeaf)) {
+  if ((child.checked || child.indeterminate) && (!leafOnly || leafOnly && child.isLeaf)) {
 
-If you want router permission && generate menu by user roles , you can use this branch [permission-control](https://github.com/PanJiaChen/vue-admin-template/tree/permission-control)
+      
+情况2: element-ui实现了按需引入打包
+  node_modules\element-ui\lib\tree.js    1051行修改源码  去掉 'includeHalfChecked &&'
+  // if ((child.checked || includeHalfChecked && child.indeterminate) && (!leafOnly || leafOnly && child.isLeaf)) {
+  if ((child.checked || child.indeterminate) && (!leafOnly || leafOnly && child.isLeaf)) {
 
-For `typescript` version, you can use [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template) (Credits: [@Armour](https://github.com/Armour))
+```
 
-## Related Project
+## 注意!!!!!!!!!
 
-- [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)
+* **vue-admin管理模板npm安装依赖后npm run de提示依赖core-js,@babel等报错的解决办法**
 
-- [electron-vue-admin](https://github.com/PanJiaChen/electron-vue-admin)
+### 安装别人做好的后台管理项目,npm run dev后报错
 
-- [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template)
+* 都是这种`core-js/modules/es.array.concat.js `什么的错误
 
-- [awesome-project](https://github.com/PanJiaChen/vue-element-admin/issues/2312)
+![报错项](README.assets/202205151908067.png)
 
-## Browsers support
+### 解决
 
-Modern browsers and Internet Explorer 10+.
+1. 找到项目下的babel.config.js **原来的presets改为下面**
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
-| --------- | --------- | --------- | --------- |
-| IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions
+   ```javascript
+   presets: [ [ "@vue/app", { useBuiltIns: "entry" } ] ],
+   ```
 
-## License
+2. 改好之后
 
-[MIT](https://github.com/PanJiaChen/vue-admin-template/blob/master/LICENSE) license.
+![原来的presets改为下面](README.assets/202205151909614.png)
 
-Copyright (c) 2017-present PanJiaChen
+3. 重新运行`npm run dev` 成功!
+
+   ![成功](README.assets/202205151910231.png)
