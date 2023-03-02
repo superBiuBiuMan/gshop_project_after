@@ -1,5 +1,5 @@
 [[redirects]]
-  from = "/prod-api/"
+  from = "/prod-api/*"
   to = "http://gmall-h5-api.atguigu.cn"
   status = 200
   force = true
