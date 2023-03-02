@@ -77,6 +77,7 @@ export default {
       } else {
         //放行
         callback()
+
       }
     }
     return {
