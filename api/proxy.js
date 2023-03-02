@@ -7,6 +7,7 @@ module.exports = (req, res) => {
   // 代理目标地址
   // 这里使用 backend 主要用于区分 vercel serverless 的 api 路径
   // target 替换为你跨域请求的服务器 如： http://gmall-h5-api.atguigu.cn
+  //
   if (req.url.startsWith('/dev-api')) {
     target = 'http://gmall-h5-api.atguigu.cn'
   }
